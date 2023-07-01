@@ -6,21 +6,21 @@ struct Tile {
 }
 
 struct SelectedTiles {
-    first: (i32, i32),
-    second: Option<(i32, i32)>,
+    first: (usize, usize),
+    second: Option<(usize, usize)>,
 }
 
 fn main() {
     println!("Welcome to the memory game!");
 
-    let size: (i32, i32) = get_game_size();
+    let size: (usize, usize) = get_game_size();
     let game: Vec<Vec<Tile>> = generate_game(size.0, size.1);
 
     // print_cheat_sheet(&game);
     play(game);
 }
 
-fn get_game_size() -> (i32, i32) {
+fn get_game_size() -> (usize, usize) {
     let mut x;
     let mut y;
     loop {
@@ -35,7 +35,7 @@ fn get_game_size() -> (i32, i32) {
     return (x, y);
 }
 
-fn get_numeric_input(command: &str) -> i32 {
+fn get_numeric_input(command: &str) -> usize {
     loop {
         println!("{} ", command);
 
@@ -48,7 +48,7 @@ fn get_numeric_input(command: &str) -> i32 {
         match parsed_result {
             Ok(parsed_value) => {
                 if parsed_value > 0 && parsed_value <= 7 {
-                    return parsed_value;
+                    return parsed_value as usize;
                 }
             }
             Err(_error) => {
@@ -60,8 +60,8 @@ fn get_numeric_input(command: &str) -> i32 {
     }
 }
 
-fn generate_game(game_size_x: i32, game_size_y: i32) -> Vec<Vec<Tile>> {
-    let game_size: usize = (game_size_x * game_size_y) as usize;
+fn generate_game(game_size_x: usize, game_size_y: usize) -> Vec<Vec<Tile>> {
+    let game_size: usize = game_size_x * game_size_y;
     let mut possible_tile_values: Vec<char> = Vec::new();
     for char in 'a'..'z' {
         possible_tile_values.push(char);
@@ -123,15 +123,15 @@ fn play(mut game: Vec<Vec<Tile>>) {
         print_game(&game, Option::from(&selected_tiles));
 
         if is_match(&game, &selected_tiles) {
-            if let Some(row) = game.get_mut(selected_tiles.first.0 as usize) {
-                if let Some(tile) = row.get_mut(selected_tiles.first.1 as usize) {
+            if let Some(row) = game.get_mut(selected_tiles.first.0) {
+                if let Some(tile) = row.get_mut(selected_tiles.first.1) {
                     tile.found = true;
                 }
             }
 
             if let Some(second) = selected_tiles.second {
-                if let Some(row) = game.get_mut(second.0 as usize) {
-                    if let Some(tile) = row.get_mut(second.1 as usize) {
+                if let Some(row) = game.get_mut(second.0) {
+                    if let Some(tile) = row.get_mut(second.1) {
                         tile.found = true;
                     }
                 }
@@ -184,9 +184,9 @@ fn print_game(game: &Vec<Vec<Tile>>, selected_tile: Option<&SelectedTiles>) {
             let tile = row.get(col_i).unwrap();
 
             let mut force_print = false;
-            if first_selected && first.0 == row_i as i32 && first.1 == col_i as i32 {
+            if first_selected && first.0 == row_i && first.1 == col_i {
                 force_print = true;
-            } else if !force_print && second_selected && second.0 == row_i as i32 && second.1 == col_i as i32 {
+            } else if !force_print && second_selected && second.0 == row_i && second.1 == col_i {
                 force_print = true;
             }
 
@@ -201,10 +201,10 @@ fn is_match(game: &Vec<Vec<Tile>>, selected_tiles: &SelectedTiles) -> bool {
     let first = selected_tiles.first;
     let second = selected_tiles.second.unwrap();
 
-    if let Some(row1) = game.get(first.0 as usize) {
-        if let Some(tile1) = row1.get(first.1 as usize) {
-            if let Some(row2) = game.get(second.0 as usize) {
-                if let Some(tile2) = row2.get(second.1 as usize) {
+    if let Some(row1) = game.get(first.0) {
+        if let Some(tile1) = row1.get(first.1) {
+            if let Some(row2) = game.get(second.0) {
+                if let Some(tile2) = row2.get(second.1) {
                     if tile1.value == tile2.value {
                         println!("That's a match!");
                         return true;
