@@ -75,9 +75,13 @@ fn generate_game(game_size_x: usize, game_size_y: usize) -> Vec<Vec<Tile>> {
     for _x in 0..game_size_x {
         let mut row: Vec<Tile> = Vec::new();
         for _y in 0..game_size_y {
-            let tile_value: char = possible_tile_values.remove(rand::thread_rng().gen_range(0..possible_tile_values.len()));
+            let tile_value: char = possible_tile_values
+                .remove(rand::thread_rng().gen_range(0..possible_tile_values.len()));
 
-            let tile = Tile { value: tile_value, found: false };
+            let tile = Tile {
+                value: tile_value,
+                found: false,
+            };
             row.push(tile);
         }
         game.push(row);
@@ -106,14 +110,20 @@ fn play(mut game: Vec<Vec<Tile>>) {
 
         println!("Choose first guess!");
         let mut selected_tiles = SelectedTiles {
-            first: (get_numeric_input("Which row?") - 1, get_numeric_input("Which column?") - 1),
+            first: (
+                get_numeric_input("Which row?") - 1,
+                get_numeric_input("Which column?") - 1,
+            ),
             second: None,
         };
         print_game(&game, Option::from(&selected_tiles));
 
         println!("Choose second guess!");
         loop {
-            selected_tiles.second = Option::from((get_numeric_input("Which row?") - 1, get_numeric_input("Which column?") - 1));
+            selected_tiles.second = Option::from((
+                get_numeric_input("Which row?") - 1,
+                get_numeric_input("Which column?") - 1,
+            ));
             if selected_tiles.first == selected_tiles.second.unwrap() {
                 println!("You must not have the same guess twice!");
             } else {
@@ -190,7 +200,11 @@ fn print_game(game: &Vec<Vec<Tile>>, selected_tile: Option<&SelectedTiles>) {
                 force_print = true;
             }
 
-            let value_to_print = if tile.found || force_print { tile.value } else { '?' };
+            let value_to_print = if tile.found || force_print {
+                tile.value
+            } else {
+                '?'
+            };
             print!(" {} ", value_to_print)
         }
         println!()
