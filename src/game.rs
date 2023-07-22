@@ -86,20 +86,14 @@ impl Game {
         let mut first = (0, 0);
         let mut second = (0, 0);
 
-        match selected_tile {
-            Some(sel) => {
-                first_selected = true;
-                first = sel.first;
-            }
-            None => {}
+        if let Some(sel) = selected_tile {
+            first_selected = true;
+            first = sel.first;
         }
         if first_selected {
-            match selected_tile.unwrap().second {
-                Some(sec) => {
-                    second_selected = true;
-                    second = sec
-                }
-                None => {}
+            if let Some(sec) = selected_tile.unwrap().second {
+                second_selected = true;
+                second = sec
             }
         }
 
@@ -111,8 +105,8 @@ impl Game {
                 let mut force_print = false;
                 if first_selected && first.0 == row_i && first.1 == col_i {
                     force_print = true;
-                } else if !force_print && second_selected && second.0 == row_i && second.1 == col_i
-                {
+                }
+                if second_selected && second.0 == row_i && second.1 == col_i {
                     force_print = true;
                 }
 
@@ -126,6 +120,7 @@ impl Game {
             println!()
         }
     }
+
     fn is_match(&self, selected_tiles: &SelectedTiles) -> bool {
         let first = selected_tiles.first;
         let second = selected_tiles.second.unwrap();
@@ -142,11 +137,9 @@ impl Game {
                 }
             }
         }
-        return false;
+        false
     }
-}
 
-impl Game {
     pub fn new(size_column: usize, size_row: usize) -> Self {
         let mut possible_tile_values: Vec<char> = get_possible_tile_values(size_column * size_row);
 
@@ -166,20 +159,20 @@ impl Game {
             game.push(row);
         }
 
-        return Game { board: game };
+        Game { board: game }
     }
 }
 
 fn get_possible_tile_values(game_size: usize) -> Vec<char> {
     let mut possible_tile_values: Vec<char> = Vec::new();
-    for char in 'a'..'z' {
+    for char in 'a'..='z' {
         possible_tile_values.push(char);
         possible_tile_values.push(char);
         if possible_tile_values.len() == game_size {
             break;
         }
     }
-    return possible_tile_values;
+    possible_tile_values
 }
 
 fn finished(game: &Vec<Vec<Tile>>) -> bool {
@@ -191,5 +184,5 @@ fn finished(game: &Vec<Vec<Tile>>) -> bool {
         }
     }
     println!("Congrats, the game is finished!");
-    return true;
+    true
 }

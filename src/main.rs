@@ -26,5 +26,5 @@ fn get_game_size() -> (usize, usize) {
             break;
         }
     }
-    return (x, y);
+    (x, y)
 }
